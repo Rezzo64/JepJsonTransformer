@@ -5,13 +5,13 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.util.ArrayList;
 
-public class SpeciesData {
+public class JepSpeciesData {
     ArrayList<String> tmHmList, evosList, eggsList;
     JsonArray tmHmJsonArray, evosJsonArray, eggsJsonArray = JsonValue.EMPTY_JSON_ARRAY;
-    Integer hp, atk, def, spe, spa, spd;
+    final Integer hp, atk, def, spe, spa, spd;
     String[] types;
 
-    public SpeciesData(JsonObject speciesObject) {
+    public JepSpeciesData(JsonObject speciesObject) {
 
         tmHmList = new ArrayList<>();
         evosList = new ArrayList<>();
