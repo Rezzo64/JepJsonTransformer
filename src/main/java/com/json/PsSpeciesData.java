@@ -106,14 +106,14 @@ public class PsSpeciesData {
             types[1] = null;
         }
     }
+    // Smashes the decomp map and the learnsets map together using Facts & Logic.
     public PsSpeciesData combineData(PsSpeciesData incomingSpeciesData) {
-        PsSpeciesData mergedSpeciesData = incomingSpeciesData;
         for (String move : this.moveLearnset.keySet()) {
             if (incomingSpeciesData.moveLearnset.containsKey(move)) {
-                mergedSpeciesData.moveLearnset.get(move).add(this.moveLearnset.get(move).getLearnMethods());
+                incomingSpeciesData.moveLearnset.get(move).add(this.moveLearnset.get(move).getLearnMethods());
             }
         }
-        return mergedSpeciesData;
+        return incomingSpeciesData;
     }
     public HashMap<String, PsSpeciesMoveLearnData> getMoveLearnset() {
         return moveLearnset;
