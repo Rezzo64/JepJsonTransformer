@@ -9,13 +9,13 @@ import java.util.Objects;
 
 public class PsSpeciesData {
 
-    private final HashMap<String, PsSpeciesMoveLearnData> moveLearnset;
+    private final HashMap<String, ArrayList<String>> moveLearnset;
     private ArrayList<JSONObject> encountersList;
     private ArrayList<KepSpeciesEncounterData> encounters;
     private ArrayList<JSONObject> eventDataList;
     private ArrayList<KepSpeciesEventData> eventData;
     private HashMap<String, Integer> hp, atk, def, spa, spd, spe;
-    private String[] types;
+    private ArrayList<String> types;
     public PsSpeciesData(JSONObject speciesData) {
         this.moveLearnset = new HashMap<>();
         this.encountersList = new ArrayList<>();
@@ -26,7 +26,7 @@ public class PsSpeciesData {
             JSONObject learnsetJson = (JSONObject) speciesData.get("learnset");
             for (String move : learnsetJson.keySet()) {
                 JSONArray learnMethodsJson = (JSONArray) learnsetJson.get(move);
-                PsSpeciesMoveLearnData learnMethods = new PsSpeciesMoveLearnData(learnMethodsJson);
+                ArrayList<String> learnMethods = new PsSpeciesMoveLearnData(learnMethodsJson).getLearnMethods();
                 moveLearnset.put(move, learnMethods);
             }
         }
@@ -66,28 +66,24 @@ public class PsSpeciesData {
 
         for (String move : speciesData.getTmHmList()) {
             String psMove = handleMove(move);
-            this.moveLearnset.put(psMove,
-                    new PsSpeciesMoveLearnData(new String[]
-                            {"2M"}
-                    )
-            );
+            if (!this.moveLearnset.containsKey(psMove)) {
+                this.moveLearnset.put(psMove, new ArrayList<>());
+            }
+            this.moveLearnset.get(psMove).add("2M");
         }
         for (String move : speciesData.getEvosList()) {
             String psMove = handleMove(move);
-            this.moveLearnset.put(psMove,
-                    new PsSpeciesMoveLearnData(new String[]
-                            // Stadium 2 move re-learner makes this okay.
-                            {"2L1"}
-                    )
-            );
+            if (!this.moveLearnset.containsKey(psMove)) {
+                this.moveLearnset.put(psMove, new ArrayList<>());
+            }
+            this.moveLearnset.get(psMove).add("2L1");
         }
         for (String move : speciesData.getEggsList()) {
             String psMove = handleMove(move);
-            this.moveLearnset.put(psMove,
-                    new PsSpeciesMoveLearnData(new String[]
-                            {"2E"}
-                    )
-            );
+            if (!this.moveLearnset.containsKey(psMove)) {
+                this.moveLearnset.put(psMove, new ArrayList<>());
+            }
+            this.moveLearnset.get(psMove).add("2E");
         }
     }
     private static String handleMove(String move) {
@@ -97,25 +93,36 @@ public class PsSpeciesData {
         }
         return move;
     }
-    private static void handleTypes(String[] types) {
-        types[0] = types[0].replace("_", "").toLowerCase();
-        types[0] = types[0].substring(0, 1).toUpperCase() + types[0].substring(1);
-        types[1] = types[1].replace("_", "").toLowerCase();
-        types[1] = types[1].substring(0, 1).toUpperCase() + types[1].substring(1);
-        if (Objects.equals(types[0], types[1])) {
-            types[1] = null;
+    private static void handleTypes(ArrayList<String> types) {
+        if (Objects.equals(types.getFirst(), "PSYCHIC_TYPE")) {
+            types.set(0, "Psychic");
         }
+        types.set(0, types.get(0).replace("_", "").toLowerCase());
+        types.set(0, (types.get(0).substring(0, 1).toUpperCase() + types.get(0).substring(1)));
+
+        if (types.size() == 2) {
+            if (Objects.equals(types.get(1), "PSYCHIC_TYPE")) {
+                types.set(1, "Psychic");
+            }
+            types.set(1, types.get(1).replace("_", "").toLowerCase());
+            types.set(1, (types.get(1).substring(0, 1).toUpperCase() + types.get(1).substring(1)));
+            // Decomp stores monotypes twice - PS does not.
+            if (types.get(0).equals(types.get(1))) {
+                types.remove(1);
+            }
+        }
+
     }
     // Smashes the decomp map and the learnsets map together using Facts & Logic.
     public PsSpeciesData combineData(PsSpeciesData incomingSpeciesData) {
         for (String move : this.moveLearnset.keySet()) {
             if (incomingSpeciesData.moveLearnset.containsKey(move)) {
-                incomingSpeciesData.moveLearnset.get(move).add(this.moveLearnset.get(move).getLearnMethods());
+                incomingSpeciesData.moveLearnset.get(move).addAll(this.moveLearnset.get(move));
             }
         }
         return incomingSpeciesData;
     }
-    public HashMap<String, PsSpeciesMoveLearnData> getMoveLearnset() {
+    public HashMap<String, ArrayList<String>> getMoveLearnset() {
         return moveLearnset;
     }
 
@@ -159,7 +166,7 @@ public class PsSpeciesData {
         return spe;
     }
 
-    public String[] getTypes() {
+    public ArrayList<String> getTypes() {
         return types;
     }
 }

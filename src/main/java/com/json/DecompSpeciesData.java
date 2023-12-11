@@ -3,19 +3,19 @@ package com.json;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DecompSpeciesData {
-    ArrayList<String> tmHmList, evosList, eggsList;
+    ArrayList<String> tmHmList, evosList, eggsList, types;
     JSONArray tmHmJsonArray, evosJsonArray, eggsJsonArray = new JSONArray();
     final Integer hp, atk, def, spe, spa, spd;
-    String[] types;
 
     public DecompSpeciesData(JSONObject speciesObject) {
 
         tmHmList = new ArrayList<>();
         evosList = new ArrayList<>();
         eggsList = new ArrayList<>();
-        types = new String[2];
+        types = new ArrayList<>();
 
         if (speciesObject.has("tmhm") && !speciesObject.isNull("tmhm")) {
             tmHmJsonArray = speciesObject.getJSONArray("tmhm");
@@ -42,8 +42,8 @@ public class DecompSpeciesData {
         spe = speciesObject.getInt("spd");
         spa = speciesObject.getInt("sat");
         spd = speciesObject.getInt("sdf");
-        types[0] = speciesObject.getJSONArray("types").getString(0);
-        types[1] = speciesObject.getJSONArray("types").getString(1);
+        types.add(speciesObject.getJSONArray("types").getString(0));
+        types.add(speciesObject.getJSONArray("types").getString(1));
     }
     public ArrayList<String> getTmHmList() {
         return tmHmList;
@@ -93,7 +93,7 @@ public class DecompSpeciesData {
         return spd;
     }
 
-    public String[] getTypes() {
+    public ArrayList<String> getTypes() {
         return types;
     }
 }

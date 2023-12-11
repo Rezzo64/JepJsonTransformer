@@ -9,7 +9,7 @@ import java.util.Map;
 import org.json.*;
 
 public class JepJsonConverter {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         String decompLoc = ("src/main/resources/decomp.json");
         JSONObject decompJson;
@@ -31,12 +31,12 @@ public class JepJsonConverter {
         ConvertJepData(speciesList);
     }
 
-    private static void ConvertJepData(LinkedHashMap<String, DecompSpeciesData> speciesList) {
+    private static void ConvertJepData(LinkedHashMap<String, DecompSpeciesData> speciesList) throws IOException {
         createLearnset(speciesList);
         JSONObject pokedexJson = createPokedex(speciesList);
     }
 
-    private static void createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) {
+    private static void createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) throws IOException {
         String learnsetsLoc = "src/main/resources/learnsets.json";
         JSONObject psJson;
         String psJsonTxt;
@@ -62,7 +62,8 @@ public class JepJsonConverter {
             speciesLearnsetMap.merge(species, speciesData,
                     (speciesData1, speciesData2) -> speciesLearnsetMap.get(species).combineData(speciesData));
         }
-
+        JSONObject newJsonLearnsets = new JSONObject(speciesLearnsetMap);
+        Files.write(Paths.get("./src/main/resources/output.json"), newJsonLearnsets.toString().getBytes());
         System.out.println("Done!");
     }
 
