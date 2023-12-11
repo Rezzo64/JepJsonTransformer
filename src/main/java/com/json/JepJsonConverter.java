@@ -11,7 +11,7 @@ import org.json.*;
 public class JepJsonConverter {
     public static void main(String[] args) {
 
-        String decompLoc = ("src/main/resources/jepingame.json");
+        String decompLoc = ("src/main/resources/decomp.json");
         JSONObject decompJson;
         String decompJsonTxt;
         try {
@@ -32,12 +32,12 @@ public class JepJsonConverter {
     }
 
     private static void ConvertJepData(LinkedHashMap<String, DecompSpeciesData> speciesList) {
-        JSONObject learnsetJson = createLearnset(speciesList);
+        createLearnset(speciesList);
         JSONObject pokedexJson = createPokedex(speciesList);
     }
 
-    private static JSONObject createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) {
-        String learnsetsLoc = "src/main/resources/keplearnsets.json";
+    private static void createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) {
+        String learnsetsLoc = "src/main/resources/learnsets.json";
         JSONObject psJson;
         String psJsonTxt;
 
@@ -58,15 +58,15 @@ public class JepJsonConverter {
 
         for (String species : jepSpeciesList.keySet()) {
             PsSpeciesData speciesData = new PsSpeciesData(jepSpeciesList.get(species));
-
             // check for already existing species in previous file
             speciesLearnsetMap.merge(species, speciesData,
                     (speciesData1, speciesData2) -> speciesLearnsetMap.get(species).combineData(speciesData));
         }
-        return psJson;
+
+        System.out.println("Done!");
     }
 
-    private static JSONObject createPokedex(Map<String, DecompSpeciesData> speciesList) {
+    private static JSONObject createPokedex(HashMap<String, DecompSpeciesData> speciesList) {
         JSONObject jsonBuilder = new JSONObject();
         return jsonBuilder;
     }
