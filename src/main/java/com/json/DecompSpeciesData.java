@@ -2,10 +2,6 @@ package com.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import java.util.ArrayList;
 
 public class DecompSpeciesData {

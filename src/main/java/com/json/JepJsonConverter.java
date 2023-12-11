@@ -1,7 +1,5 @@
 package com.json;
 
-import javax.json.*;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
