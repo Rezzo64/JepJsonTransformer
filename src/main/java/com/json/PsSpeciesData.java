@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class PsSpeciesData {
 
@@ -61,6 +62,7 @@ public class PsSpeciesData {
         spe.put("spe", speciesData.getSpe());
         this.moveLearnset = new HashMap<>();
         this.types = speciesData.getTypes();
+        handleTypes(types);
 
         for (String move : speciesData.getTmHmList()) {
             String psMove = handleMove(move);
@@ -94,6 +96,24 @@ public class PsSpeciesData {
             return "psychic";
         }
         return move;
+    }
+    private static void handleTypes(String[] types) {
+        types[0] = types[0].replace("_", "").toLowerCase();
+        types[0] = types[0].substring(0, 1).toUpperCase() + types[0].substring(1);
+        types[1] = types[1].replace("_", "").toLowerCase();
+        types[1] = types[1].substring(0, 1).toUpperCase() + types[1].substring(1);
+        if (Objects.equals(types[0], types[1])) {
+            types[1] = null;
+        }
+    }
+    public PsSpeciesData combineData(PsSpeciesData incomingSpeciesData) {
+        PsSpeciesData mergedSpeciesData = incomingSpeciesData;
+        for (String move : this.moveLearnset.keySet()) {
+            if (incomingSpeciesData.moveLearnset.containsKey(move)) {
+                mergedSpeciesData.moveLearnset.get(move).add(this.moveLearnset.get(move).getLearnMethods());
+            }
+        }
+        return mergedSpeciesData;
     }
     public HashMap<String, PsSpeciesMoveLearnData> getMoveLearnset() {
         return moveLearnset;

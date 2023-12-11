@@ -60,11 +60,8 @@ public class JepJsonConverter {
             PsSpeciesData speciesData = new PsSpeciesData(jepSpeciesList.get(species));
 
             // check for already existing species in previous file
-            if (!speciesLearnsetMap.containsKey(species)) {
-                speciesLearnsetMap.put(species, speciesData);
-            } else {
-
-            }
+            speciesLearnsetMap.merge(species, speciesData,
+                    (speciesData1, speciesData2) -> speciesLearnsetMap.get(species).combineData(speciesData));
         }
         return psJson;
     }

@@ -21,4 +21,7 @@ public class PsSpeciesMoveLearnData {
     public ArrayList<String> getLearnMethods() {
         return learnMethods;
     }
+    public void add(ArrayList<String> learnMethodList) {
+        this.learnMethods.addAll(learnMethodList);
+    }
 }
