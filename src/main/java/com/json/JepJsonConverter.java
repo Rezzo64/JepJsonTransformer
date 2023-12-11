@@ -13,61 +13,65 @@ import org.json.*;
 public class JepJsonConverter {
     public static void main(String[] args) {
 
-        File input = new File("src/main/resources/jepingame.json");
-        JsonObject jsonInput;
+        String decompLoc = ("src/main/resources/jepingame.json");
+        JSONObject decompJson;
+        String decompJsonTxt;
         try {
-            JsonReader reader = Json.createReader(new FileInputStream(input));
-            jsonInput = reader.readObject();
-        } catch (FileNotFoundException e) {
+            decompJsonTxt = new String(Files.readAllBytes(Paths.get(decompLoc)));
+            decompJson = new JSONObject(decompJsonTxt);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         
-        LinkedHashMap<String, JepSpeciesData> speciesList = new LinkedHashMap<>();
-        System.out.println(jsonInput.keySet());
-        for (String species : jsonInput.keySet()) {
-            JepSpeciesData speciesData = new JepSpeciesData(jsonInput.getJsonObject(species));
+        LinkedHashMap<String, DecompSpeciesData> speciesList = new LinkedHashMap<>();
+        System.out.println(decompJson.keySet());
+        for (String species : decompJson.keySet()) {
+            DecompSpeciesData speciesData = new DecompSpeciesData(decompJson.getJSONObject(species));
             speciesList.put(species, speciesData);
         }
         System.out.println("Species Data obtained...");
         ConvertJepData(speciesList);
     }
 
-    private static void ConvertJepData(LinkedHashMap<String, JepSpeciesData> speciesList) {
+    private static void ConvertJepData(LinkedHashMap<String, DecompSpeciesData> speciesList) {
         JSONObject learnsetJson = createLearnset(speciesList);
         JSONObject pokedexJson = createPokedex(speciesList);
     }
 
-    private static JSONObject createLearnset(Map<String, JepSpeciesData> speciesList) {
-        String kepLearnsets = "src/main/resources/keplearnsets.json";
-        JSONObject jsonBuilder;
-        String kepJsonTxt;
+    private static JSONObject createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) {
+        String learnsetsLoc = "src/main/resources/keplearnsets.json";
+        JSONObject psJson;
+        String psJsonTxt;
 
         try {
-            kepJsonTxt = new String(Files.readAllBytes(Paths.get(kepLearnsets)));
-            jsonBuilder = new JSONObject(kepJsonTxt);
+            psJsonTxt = new String(Files.readAllBytes(Paths.get(learnsetsLoc)));
+            psJson = new JSONObject(psJsonTxt);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        HashMap<String, KepSpeciesData> kepLearnsetMap = new HashMap<>();
+        // add all entries here
+        HashMap<String, PsSpeciesData> speciesLearnsetMap = new HashMap<>();
 
-        for (String species : jsonBuilder.keySet()) {
-            KepSpeciesData speciesData = new KepSpeciesData(jsonBuilder.getJSONObject(species));
-            kepLearnsetMap.put(species, speciesData);
+        for (String species : psJson.keySet()) {
+            PsSpeciesData speciesData = new PsSpeciesData(psJson.getJSONObject(species));
+            speciesLearnsetMap.put(species, speciesData);
         }
 
-        for (String species : speciesList.keySet()) {
-            for (String move : speciesList.get(species).tmHmList) {
+        for (String species : jepSpeciesList.keySet()) {
+            PsSpeciesData speciesData = new PsSpeciesData(jepSpeciesList.get(species));
+
+            // check for already existing species in previous file
+            if (!speciesLearnsetMap.containsKey(species)) {
+                speciesLearnsetMap.put(species, speciesData);
+            } else {
 
             }
-//            jsonBuilder.put(species,
-//                    new JSONObject().put("learnset", ))
-            jsonBuilder.put(species, speciesList.get(species).getTmHmList());
         }
-        return jsonBuilder;
+        return psJson;
     }
 
-    private static JSONObject createPokedex(Map<String, JepSpeciesData> speciesList) {
+    private static JSONObject createPokedex(Map<String, DecompSpeciesData> speciesList) {
         JSONObject jsonBuilder = new JSONObject();
         return jsonBuilder;
     }
