@@ -10,15 +10,11 @@ import java.util.Objects;
 public class PsLearnsetData {
 
     private final HashMap<String, ArrayList<String>> moveLearnset;
-    private ArrayList<JSONObject> encountersList;
     private ArrayList<PsLearnsetEncounterData> encounters;
-    private ArrayList<JSONObject> eventDataList;
     private ArrayList<PsLearnsetEventData> eventData;
     public PsLearnsetData(JSONObject speciesData) {
         this.moveLearnset = new HashMap<>();
-        this.encountersList = new ArrayList<>();
         this.encounters = new ArrayList<>();
-        this.eventDataList = new ArrayList<>();
         this.eventData = new ArrayList<>();
         if (speciesData.has("learnset")) {
             JSONObject learnsetJson = (JSONObject) speciesData.get("learnset");
@@ -32,7 +28,6 @@ public class PsLearnsetData {
             JSONArray encountersJson = (JSONArray) speciesData.get("encounters");
             for (int i = 0; i < encountersJson.length(); i++) {
                 JSONObject encounterJson = (JSONObject) encountersJson.get(i);
-                encountersList.add(encounterJson);
                 encounters.add(new PsLearnsetEncounterData(encounterJson));
             }
         }
@@ -40,7 +35,6 @@ public class PsLearnsetData {
             JSONArray eventDataJson = (JSONArray) speciesData.get("eventData");
             for (int i = 0; i < eventDataJson.length(); i++) {
                 JSONObject eventJson = (JSONObject) eventDataJson.get(i);
-                eventDataList.add(eventJson);
                 eventData.add(new PsLearnsetEventData(eventJson));
             }
         }
@@ -93,16 +87,8 @@ public class PsLearnsetData {
         return moveLearnset;
     }
 
-    public ArrayList<JSONObject> getEncountersList() {
-        return encountersList;
-    }
-
     public ArrayList<PsLearnsetEncounterData> getEncounters() {
         return encounters;
-    }
-
-    public ArrayList<JSONObject> getEventDataList() {
-        return eventDataList;
     }
 
     public ArrayList<PsLearnsetEventData> getEventData() {
