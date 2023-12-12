@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.json.*;
 
-public class JepJsonConverter {
+public class DecompJsonConverter {
     public static void main(String[] args) throws IOException {
 
         String decompLoc = ("src/main/resources/decomp.json");
@@ -33,10 +33,11 @@ public class JepJsonConverter {
 
     private static void ConvertJepData(LinkedHashMap<String, DecompSpeciesData> speciesList) throws IOException {
         createLearnset(speciesList);
-        JSONObject pokedexJson = createPokedex(speciesList);
+        createPokedex(speciesList);
+        System.out.println("Done!");
     }
 
-    private static void createLearnset(Map<String, DecompSpeciesData> jepSpeciesList) throws IOException {
+    private static void createLearnset(Map<String, DecompSpeciesData> decompSpeciesList) throws IOException {
         String learnsetsLoc = "src/main/resources/learnsets.json";
         JSONObject psJson;
         String psJsonTxt;
@@ -49,27 +50,32 @@ public class JepJsonConverter {
         }
 
         // add all entries here
-        HashMap<String, PsSpeciesData> speciesLearnsetMap = new HashMap<>();
+        HashMap<String, PsLearnsetData> speciesDataMap = new HashMap<>();
 
         for (String species : psJson.keySet()) {
-            PsSpeciesData speciesData = new PsSpeciesData(psJson.getJSONObject(species));
-            speciesLearnsetMap.put(species, speciesData);
+            PsLearnsetData speciesData = new PsLearnsetData(psJson.getJSONObject(species));
+            speciesDataMap.put(species, speciesData);
         }
 
-        for (String species : jepSpeciesList.keySet()) {
-            PsSpeciesData speciesData = new PsSpeciesData(jepSpeciesList.get(species));
+        for (String species : decompSpeciesList.keySet()) {
+            PsLearnsetData speciesData = new PsLearnsetData(decompSpeciesList.get(species));
             // check for already existing species in previous file
-            speciesLearnsetMap.merge(species, speciesData,
-                    (speciesData1, speciesData2) -> speciesLearnsetMap.get(species).combineData(speciesData));
+            speciesDataMap.merge(species, speciesData,
+                    (speciesData1, speciesData2) -> speciesDataMap.get(species).combineData(speciesData));
         }
-        JSONObject newJsonLearnsets = new JSONObject(speciesLearnsetMap);
-        Files.write(Paths.get("./src/main/resources/output.json"), newJsonLearnsets.toString().getBytes());
-        System.out.println("Done!");
+        JSONObject newJsonLearnsets = new JSONObject(speciesDataMap);
+        Files.write(Paths.get("./src/main/resources/output-learnsets.json"), newJsonLearnsets.toString().getBytes());
+
     }
 
-    private static JSONObject createPokedex(HashMap<String, DecompSpeciesData> speciesList) {
-        JSONObject jsonBuilder = new JSONObject();
-        return jsonBuilder;
-    }
+    private static void createPokedex(HashMap<String, DecompSpeciesData> decompSpeciesList) throws IOException {
+        HashMap<String, PsPokedexData> pokedexDataMap = new HashMap<>();
 
+        for (String species : decompSpeciesList.keySet()) {
+            PsPokedexData pokedexData = new PsPokedexData(decompSpeciesList.get(species), species);
+            pokedexDataMap.put(species, pokedexData);
+        }
+        JSONObject newJsonPokedex = new JSONObject(pokedexDataMap);
+        Files.write(Paths.get("./src/main/resources/output-pokedex.json"), newJsonPokedex.toString().getBytes());
+    }
 }

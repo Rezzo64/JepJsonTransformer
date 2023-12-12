@@ -4,10 +4,10 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-public class KepSpeciesEventMovesData {
+public class PsLearnsetEventMovesData {
     private final ArrayList<String> moves;
 
-    KepSpeciesEventMovesData(JSONArray movesArray) {
+    PsLearnsetEventMovesData(JSONArray movesArray) {
         this.moves = new ArrayList<>();
         for (Object move : movesArray) {
             this.moves.add((String) move);

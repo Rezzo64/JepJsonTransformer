@@ -2,14 +2,14 @@ package com.json;
 
 import org.json.JSONObject;
 
-public class KepSpeciesEventData {
+public class PsLearnsetEventData {
     private final Integer generation, level;
     private Object shiny = null;
     private Boolean japan = null;
-    public KepSpeciesEventData(JSONObject eventData) {
+    public PsLearnsetEventData(JSONObject eventData) {
         this.generation = eventData.getInt("generation");
         this.level = eventData.getInt("level");
-        KepSpeciesEventMovesData moves = new KepSpeciesEventMovesData(eventData.getJSONArray("moves"));
+        PsLearnsetEventMovesData moves = new PsLearnsetEventMovesData(eventData.getJSONArray("moves"));
         if (eventData.has("shiny")) {
             this.shiny = eventData.get("shiny");
         }
