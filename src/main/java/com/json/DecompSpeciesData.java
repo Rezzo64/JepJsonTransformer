@@ -69,30 +69,6 @@ public class DecompSpeciesData {
         return eggsJsonArray;
     }
 
-    public Integer getHp() {
-        return hp;
-    }
-
-    public Integer getAtk() {
-        return atk;
-    }
-
-    public Integer getDef() {
-        return def;
-    }
-
-    public Integer getSpe() {
-        return spe;
-    }
-
-    public Integer getSpa() {
-        return spa;
-    }
-
-    public Integer getSpd() {
-        return spd;
-    }
-
     public ArrayList<String> getTypes() {
         return types;
     }

@@ -9,11 +9,11 @@ public class PsPokedexData {
     private final Integer gen;
     private String name;
     private final ArrayList<String> types;
-    private final HashMap<String, PsPokedexBaseStatsData> baseStats;
+    private final HashMap<String, Integer> baseStats;
     private final ArrayList<String> evos;
     public PsPokedexData(DecompSpeciesData speciesData, String speciesName) {
         this.gen = 2;    // Manually correct this to 1 if necessary
-        this.name = speciesName;
+        this.name = speciesName.substring(0, 1).toUpperCase() + speciesName.substring(1);
         if (this.name.endsWith("galar")) {
             this.name = this.name.substring(0, this.name.length() - 5) + "-Galar";
         }
@@ -27,7 +27,12 @@ public class PsPokedexData {
             this.name = this.name.substring(0, this.name.length() - 6) + "-Paldea";
         }
         this.baseStats = new HashMap<>();
-        this.baseStats.put("baseStats", new PsPokedexBaseStatsData(speciesData));
+        this.baseStats.put("hp", speciesData.hp);
+        this.baseStats.put("atk", speciesData.atk);
+        this.baseStats.put("def", speciesData.def);
+        this.baseStats.put("spa", speciesData.spa);
+        this.baseStats.put("spd", speciesData.spd);
+        this.baseStats.put("spe", speciesData.spe);
         this.types = speciesData.getTypes();
         handleTypes(types);
         evos = new ArrayList<>();
@@ -60,7 +65,7 @@ public class PsPokedexData {
         return name;
     }
 
-    public HashMap<String, PsPokedexBaseStatsData> getBaseStats() {
+    public HashMap<String, Integer> getBaseStats() {
         return baseStats;
     }
 
