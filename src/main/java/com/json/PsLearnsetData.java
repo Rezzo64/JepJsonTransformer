@@ -78,10 +78,10 @@ public class PsLearnsetData {
     public PsLearnsetData combineData(PsLearnsetData incomingSpeciesData) {
         for (String move : this.moveLearnset.keySet()) {
             if (incomingSpeciesData.moveLearnset.containsKey(move)) {
-                incomingSpeciesData.moveLearnset.get(move).addAll(this.moveLearnset.get(move));
+                this.moveLearnset.get(move).addAll(this.moveLearnset.get(move));
             }
         }
-        return incomingSpeciesData;
+        return this;
     }
     public HashMap<String, ArrayList<String>> getMoveLearnset() {
         return moveLearnset;
