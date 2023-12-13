@@ -5,15 +5,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class PsLearnsetData {
 
-    private final HashMap<String, ArrayList<String>> moveLearnset;
+    private final HashMap<String, ArrayList<String>> learnset;
     private ArrayList<PsLearnsetEncounterData> encounters;
     private ArrayList<PsLearnsetEventData> eventData;
     public PsLearnsetData(JSONObject speciesData) {
-        this.moveLearnset = new HashMap<>();
+        this.learnset = new HashMap<>();
         this.encounters = new ArrayList<>();
         this.eventData = new ArrayList<>();
         if (speciesData.has("learnset")) {
@@ -21,7 +20,7 @@ public class PsLearnsetData {
             for (String move : learnsetJson.keySet()) {
                 JSONArray learnMethodsJson = (JSONArray) learnsetJson.get(move);
                 ArrayList<String> learnMethods = new PsSpeciesMoveLearnData(learnMethodsJson).getLearnMethods();
-                moveLearnset.put(move, learnMethods);
+                learnset.put(move, learnMethods);
             }
         }
         if (speciesData.has("encounters")) {
@@ -41,29 +40,29 @@ public class PsLearnsetData {
     }
     public PsLearnsetData(DecompSpeciesData speciesData) {
 
-        this.moveLearnset = new HashMap<>();
+        this.learnset = new HashMap<>();
 
 
         for (String move : speciesData.getTmHmList()) {
             String psMove = handleMove(move);
-            if (!this.moveLearnset.containsKey(psMove)) {
-                this.moveLearnset.put(psMove, new ArrayList<>());
+            if (!this.learnset.containsKey(psMove)) {
+                this.learnset.put(psMove, new ArrayList<>());
             }
-            this.moveLearnset.get(psMove).add("2M");
+            this.learnset.get(psMove).add("2M");
         }
         for (String move : speciesData.getEvosList()) {
             String psMove = handleMove(move);
-            if (!this.moveLearnset.containsKey(psMove)) {
-                this.moveLearnset.put(psMove, new ArrayList<>());
+            if (!this.learnset.containsKey(psMove)) {
+                this.learnset.put(psMove, new ArrayList<>());
             }
-            this.moveLearnset.get(psMove).add("2L1");
+            this.learnset.get(psMove).add("2L1");
         }
         for (String move : speciesData.getEggsList()) {
             String psMove = handleMove(move);
-            if (!this.moveLearnset.containsKey(psMove)) {
-                this.moveLearnset.put(psMove, new ArrayList<>());
+            if (!this.learnset.containsKey(psMove)) {
+                this.learnset.put(psMove, new ArrayList<>());
             }
-            this.moveLearnset.get(psMove).add("2E");
+            this.learnset.get(psMove).add("2E");
         }
     }
     private static String handleMove(String move) {
@@ -76,17 +75,17 @@ public class PsLearnsetData {
 
     // Smashes the decomp map and the learnsets map together using Facts & Logic.
     public PsLearnsetData combineData(PsLearnsetData incomingSpeciesData) {
-        for (String move : incomingSpeciesData.moveLearnset.keySet()) {
-            if (this.moveLearnset.containsKey(move)) {
-                this.moveLearnset.get(move).addAll(incomingSpeciesData.moveLearnset.get(move));
+        for (String move : incomingSpeciesData.learnset.keySet()) {
+            if (this.learnset.containsKey(move)) {
+                this.learnset.get(move).addAll(incomingSpeciesData.learnset.get(move));
             } else {
-                this.moveLearnset.put(move, incomingSpeciesData.moveLearnset.get(move));
+                this.learnset.put(move, incomingSpeciesData.learnset.get(move));
             }
         }
         return this;
     }
-    public HashMap<String, ArrayList<String>> getMoveLearnset() {
-        return moveLearnset;
+    public HashMap<String, ArrayList<String>> getLearnset() {
+        return learnset;
     }
 
     public ArrayList<PsLearnsetEncounterData> getEncounters() {
