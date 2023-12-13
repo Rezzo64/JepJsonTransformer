@@ -76,9 +76,11 @@ public class PsLearnsetData {
 
     // Smashes the decomp map and the learnsets map together using Facts & Logic.
     public PsLearnsetData combineData(PsLearnsetData incomingSpeciesData) {
-        for (String move : this.moveLearnset.keySet()) {
-            if (incomingSpeciesData.moveLearnset.containsKey(move)) {
-                this.moveLearnset.get(move).addAll(this.moveLearnset.get(move));
+        for (String move : incomingSpeciesData.moveLearnset.keySet()) {
+            if (this.moveLearnset.containsKey(move)) {
+                this.moveLearnset.get(move).addAll(incomingSpeciesData.moveLearnset.get(move));
+            } else {
+                this.moveLearnset.put(move, incomingSpeciesData.moveLearnset.get(move));
             }
         }
         return this;
